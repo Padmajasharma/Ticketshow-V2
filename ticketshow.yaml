@@ -1,0 +1,439 @@
+openapi: 3.0.0
+info:
+  title: Sample API
+  version: 1.0.0
+paths:
+  /signup:
+    post:
+      summary: User Signup
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                email:
+                  type: string
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '201':
+          description: User successfully signed up
+          content:
+            application/json:
+              example:
+                token: "your-access-token"
+                is_admin: false
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                message: Missing fields!
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              example:
+                message: Username already exists!
+  /login:
+    post:
+      summary: User Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: User successfully logged in
+          content:
+            application/json:
+              example:
+                token: "your-access-token"
+                is_admin: false
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                message: Invalid credentials!
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              example:
+                message: Wrong username or password!
+  /theatres:
+    get:
+      summary: Get all theaters
+      responses:
+        '200':
+          description: List of theaters
+          content:
+            application/json:
+              example:
+                - id: 1
+                  name: "Theater Name"
+                  place: "Theater Place"
+                  capacity: 100
+    post:
+      summary: Create a new theater
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  required: true
+                place:
+                  type: string
+                  required: true
+                capacity:
+                  type: integer
+                  required: true
+      responses:
+        '201':
+          description: Theater created successfully
+          content:
+            application/json:
+              example:
+                id: 1
+                name: "Theater Name"
+                place: "Theater Place"
+                capacity: 100
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                message: Name and theatre_id are required
+  /theatres/{theatre_id}:
+    put:
+      summary: Update a theater by ID
+      parameters:
+        - name: theatre_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                place:
+                  type: string
+                capacity:
+                  type: integer
+      responses:
+        '200':
+          description: Theater updated successfully
+          content:
+            application/json:
+              example:
+                id: 1
+                name: "Updated Theater Name"
+                place: "Updated Theater Place"
+                capacity: 150
+        '404':
+          description: Theater not found
+        '400':
+          description: Bad Request
+    delete:
+      summary: Delete a theater by ID
+      parameters:
+        - name: theatre_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Theater deleted
+        '404':
+          description: Theater not found
+  /shows:
+    get:
+      summary: Get all shows
+      responses:
+        '200':
+          description: List of shows
+          content:
+            application/json:
+              example:
+                - id: 1
+                  name: "Show Name"
+                  start_time: "2023-09-08T10:00:00Z"
+                  end_time: "2023-09-08T12:00:00Z"
+                  tags: "Comedy"
+                  ticket_price: 20.0
+                  image: "show-image.jpg"
+                  theatre_id: 1
+                  capacity: 100
+    post:
+      summary: Create a new show
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  required: true
+                start_time:
+                  type: string
+                  format: date-time
+                  required: true
+                end_time:
+                  type: string
+                  format: date-time
+                  required: true
+                tags:
+                  type: string
+                ticket_price:
+                  type: number
+                  required: true
+                theatre_id:
+                  type: integer
+                  required: true
+                image:
+                  type: string
+      responses:
+        '201':
+          description: Show created successfully
+          content:
+            application/json:
+              example:
+                message: "Show created successfully"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                message: Name and theatre_id are required
+  /shows/{show_id}:
+    put:
+      summary: Update a show by ID
+      parameters:
+        - name: show_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                start_time:
+                  type: string
+                  format: date-time
+                end_time:
+                  type: string
+                  format: date-time
+                tags:
+                  type: string
+                ticket_price:
+                  type: number
+                theatre_id:
+                  type: integer
+                image:
+                  type: string
+      responses:
+        '200':
+          description: Show updated successfully
+          content:
+            application/json:
+              example:
+                id: 1
+                name: "Updated Show Name"
+                start_time: "2023-09-08T12:00:00Z"
+                end_time: "2023-09-08T14:00:00Z"
+                tags: "Drama"
+                ticket_price: 25.0
+                image: "updated-show-image.jpg"
+                theatre_id: 2
+                capacity: 120
+        '404':
+          description: Show not found
+        '400':
+          description: Bad Request
+    delete:
+      summary: Delete a show by ID
+      parameters:
+        - name: show_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Show deleted
+        '404':
+          description: Show not found
+  /uploads:
+    post:
+      summary: Upload a file
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          description: File uploaded successfully
+          content:
+            application/json:
+              example:
+                url: "/uploads/image.jpg"
+        '400':
+          description: Bad Request
+  /uploads/{filename}:
+    get:
+      summary: Get an uploaded file
+      parameters:
+        - name: filename
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: File retrieved
+          content:
+            application/octet-stream:
+              example: "File content here"
+  /bookshows/{show_id}/book:
+    post:
+      summary: Book tickets for a show
+      parameters:
+        - name: show_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                number_of_tickets:
+                  type: integer
+                rating:
+                  type: integer
+      responses:
+        '200':
+          description: Tickets booked successfully
+        '400':
+          description: Bad Request
+  /search/theatres:
+    get:
+      summary: Search for theaters
+      parameters:
+        - name: name
+          in: query
+          schema:
+            type: string
+        - name: place
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of theaters matching the search criteria
+          content:
+            application/json:
+              example:
+                - id: 1
+                  name: "Theater Name"
+                  place: "Theater Place"
+  /search/shows:
+    get:
+      summary: Search for shows
+      parameters:
+        - name: tags
+          in: query
+          schema:
+            type: string
+        - name: rating
+          in: query
+          schema:
+            type: number
+      responses:
+        '200':
+          description: List of shows matching the search criteria
+          content:
+            application/json:
+              example:
+                - id: 1
+                  name: "Show Name"
+                  tags: "Comedy"
+                - id: 2
+                  name: "Another Show"
+                  tags: "Drama"
+  /userprofile:
+    get:
+      summary: Get user profile and booked shows
+      responses:
+        '200':
+          description: User profile and booked shows
+          content:
+            application/json:
+              example:
+                user:
+                  username: "username"
+                  email: "user@example.com"
+                booked_shows:
+                  - show_name: "Show Name"
+                    show_start_time: "2023-09-08T10:00:00Z"
+                    show_end_time: "2023-09-08T12:00:00Z"
+                    ticket_count: 2
+  /export_theatre/{theatre_id}:
+    get:
+      summary: Export theatre data to CSV
+      parameters:
+        - name: theatre_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: CSV data exported successfully
+          content:
+            text/csv:
+              example: "CSV data here"
+        '500':
+          description: Internal Server Error
